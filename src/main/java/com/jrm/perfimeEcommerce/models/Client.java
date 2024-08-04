@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Entity
 @Table(name = "clients")
@@ -30,7 +32,8 @@ public class Client {
 
     private Integer verified;
 
-    private LocalDateTime created_at;
+    @Column(name = "created_at")
+    private Date createdAt;
 
     public Client(RegistrationClientData data){
         this.email = data.email();
@@ -38,6 +41,6 @@ public class Client {
         this.firstName = data.firstName();
         this.lastName = data.lastName();
         this.verified = 0;
-        this.created_at = LocalDateTime.now();
+        this.createdAt = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
     }
 }

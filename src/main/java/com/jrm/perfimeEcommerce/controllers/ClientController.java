@@ -2,6 +2,7 @@ package com.jrm.perfimeEcommerce.controllers;
 
 import com.jrm.perfimeEcommerce.dto.DetailingClientData;
 import com.jrm.perfimeEcommerce.dto.RegistrationClientData;
+import com.jrm.perfimeEcommerce.dto.VerifyClientData;
 import com.jrm.perfimeEcommerce.services.ClientService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +25,13 @@ public class ClientController {
     public ResponseEntity register(@RequestBody @Valid RegistrationClientData data, UriComponentsBuilder builder){
         var client = service.register(data);
 
-        return ResponseEntity.ok().build();
+        var uri = builder.path("/clients/{id}").buildAndExpand(client.getId()).toUri();
 
-        /*var uri = builder.path("/clients/{id}").buildAndExpand(client.getId()).toUri();
+        return ResponseEntity.created(uri).body(new DetailingClientData(client).id());
+    }
 
-        return ResponseEntity.created(uri).body(new DetailingClientData(client));*/
+    @PostMapping("/verify")
+    public void verify(@RequestBody VerifyClientData clientId){
+        service.verify(clientId);
     }
 }
