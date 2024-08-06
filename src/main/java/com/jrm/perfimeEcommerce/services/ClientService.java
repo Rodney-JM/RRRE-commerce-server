@@ -24,9 +24,9 @@ public class ClientService {
         return client;
     }
 
-    public void verify(VerifyClientData clientId){
+    public boolean verify(VerifyClientData clientId){
         Client client = clientRepository.getReferenceById(clientId.id());
 
-        emailService.sendTestEmail(client.getEmail(), "TESTE", "EAI PAI");
+        return false;
     }
 }

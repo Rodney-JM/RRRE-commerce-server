@@ -31,7 +31,12 @@ public class ClientController {
     }
 
     @PostMapping("/verify")
-    public void verify(@RequestBody VerifyClientData clientId){
-        service.verify(clientId);
+    public ResponseEntity verify(@RequestBody VerifyClientData clientId){
+        boolean isValid = service.verify(clientId);
+
+        if(isValid){
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 }
