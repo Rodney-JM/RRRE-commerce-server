@@ -17,6 +17,9 @@ public class ClientService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private TokenEmailVerificationService tokenEmailVerificationService;
+
     public Client register(RegistrationClientData data){
         var client = new Client(data);
 
@@ -25,8 +28,8 @@ public class ClientService {
     }
 
     public boolean verify(VerifyClientData clientId){
-        Client client = clientRepository.getReferenceById(clientId.id());
+        Client client = clientRepository.findByEmail(clientId.email());
 
-        return false;
+        return tokenEmailVerificationService.validateToken(client.getEmail(), clientId.token());
     }
 }

@@ -2,10 +2,7 @@ package com.jrm.perfimeEcommerce.models;
 
 import com.jrm.perfimeEcommerce.dto.RegistrationClientData;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -17,6 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Getter
+@Setter
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
