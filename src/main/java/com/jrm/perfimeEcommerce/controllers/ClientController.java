@@ -1,6 +1,7 @@
 package com.jrm.perfimeEcommerce.controllers;
 
 import com.jrm.perfimeEcommerce.dto.DetailingClientData;
+import com.jrm.perfimeEcommerce.dto.LoginClientData;
 import com.jrm.perfimeEcommerce.dto.RegistrationClientData;
 import com.jrm.perfimeEcommerce.dto.VerifyClientData;
 import com.jrm.perfimeEcommerce.services.ClientService;
@@ -42,6 +43,18 @@ public class ClientController {
         if(isValid){
             return ResponseEntity.ok().build();
         }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping("/login")
+    @Transactional
+    public ResponseEntity login(@RequestBody LoginClientData loginClientData){
+        boolean client = service.login(loginClientData);
+
+        if(client){
+            return ResponseEntity.ok().build();
+        }
+
         return ResponseEntity.badRequest().build();
     }
 }

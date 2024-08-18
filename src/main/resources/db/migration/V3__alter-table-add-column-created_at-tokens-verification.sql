@@ -1,0 +1,1 @@
+ALTER TABLE verifications_tokens ADD COLUMN created_at DATE;

@@ -6,6 +6,9 @@ import com.jrm.perfimeEcommerce.repository.VerificationEmailTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
 
@@ -26,6 +29,7 @@ public class TokenEmailVerificationService {
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setEmail(email);
         verificationToken.setToken(token);
+        verificationToken.setCreatedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
 
         tokenRepository.save(verificationToken);
         emailService.sendVerificationEmail(email, "Verification Token", token);
@@ -36,11 +40,16 @@ public class TokenEmailVerificationService {
     public boolean validateToken(String email, String token){
         Optional<VerificationToken> tokenOptional = tokenRepository.findByEmailAndToken(email, token);
 
+
         if(tokenOptional.isPresent()){
             var client = clientRepository.findByEmail(email);
-            client.setVerified(1);
-            clientRepository.save(client);
-            return true;
+            if (client.isPresent()) {
+                client.get().setVerified(1);
+                clientRepository.save(client.get());
+
+                tokenRepository.delete(tokenOptional.get());
+                return true;
+            }
         }
         return false;
     }

@@ -3,6 +3,8 @@ package com.jrm.perfimeEcommerce.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "verifications_tokens")
 @AllArgsConstructor
@@ -18,4 +20,6 @@ public class VerificationToken {
 
     private String email;
     private String token;
+    @Column(name = "created_at")
+    private Date createdAt;
 }
