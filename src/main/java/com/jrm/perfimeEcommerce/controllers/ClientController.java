@@ -46,15 +46,5 @@ public class ClientController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PostMapping("/login")
-    @Transactional
-    public ResponseEntity login(@RequestBody LoginClientData loginClientData){
-        boolean client = service.login(loginClientData);
 
-        if(client){
-            return ResponseEntity.ok().build();
-        }
-
-        return ResponseEntity.badRequest().build();
-    }
 }

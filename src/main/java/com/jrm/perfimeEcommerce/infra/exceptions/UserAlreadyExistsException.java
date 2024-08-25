@@ -1,4 +1,4 @@
-package com.jrm.perfimeEcommerce.security.exceptions;
+package com.jrm.perfimeEcommerce.infra.exceptions;
 
 public class UserAlreadyExistsException extends RuntimeException{
     public UserAlreadyExistsException(String message){
