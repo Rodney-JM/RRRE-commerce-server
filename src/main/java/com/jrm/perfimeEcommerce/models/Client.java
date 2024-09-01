@@ -1,11 +1,14 @@
 package com.jrm.perfimeEcommerce.models;
 
 import com.jrm.perfimeEcommerce.dto.RegistrationClientData;
+import com.jrm.perfimeEcommerce.infra.security.SecurityConfigurations;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -39,9 +42,12 @@ public class Client implements UserDetails {
     @Column(name = "created_at")
     private Date createdAt;
 
+    @Transient
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     public Client(RegistrationClientData data){
         this.email = data.email();
-        this.cl_password = data.password();
+        this.cl_password = passwordEncoder.encode(data.password());
         this.firstName = data.firstName();
         this.lastName = data.lastName();
         this.verified = 0;

@@ -1,5 +1,7 @@
 package com.jrm.perfimeEcommerce.infra.security;
 
+import com.jrm.perfimeEcommerce.infra.exceptions.UserDoesntExists;
+import com.jrm.perfimeEcommerce.models.Client;
 import com.jrm.perfimeEcommerce.repository.ClientRepository;
 import com.jrm.perfimeEcommerce.services.TokenService;
 import jakarta.servlet.FilterChain;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
@@ -27,10 +30,14 @@ public class SecurityFilter extends OncePerRequestFilter {
         var JwtToken = recoverToken(request);
         if(JwtToken!=null){
             var subject = tokenService.getSubject(JwtToken);
-            var client = clientRepository.findByEmail(subject);
-            var authentication = new UsernamePasswordAuthenticationToken(client, null, client.get().getAuthorities());
+            Optional<Client> client = clientRepository.findByEmail(subject);
+            if(client.isPresent()) {
+                var authentication = new UsernamePasswordAuthenticationToken(client.get(), null, client.get().getAuthorities());
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }else{
+                throw new UserDoesntExists("User does not exists");
+            }
         }
 
         filterChain.doFilter(request, response);

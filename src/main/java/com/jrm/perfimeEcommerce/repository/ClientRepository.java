@@ -2,6 +2,8 @@ package com.jrm.perfimeEcommerce.repository;
 
 import com.jrm.perfimeEcommerce.models.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
 import javax.swing.text.html.Option;
@@ -14,4 +16,6 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     void deleteByVerifiedFalseAndCreatedAtBefore(Date cutOffDate);
 
     Optional<Client> findByEmail(String email);
+
+    UserDetails findByEmailAndVerified(String email, Integer isActive);
 }

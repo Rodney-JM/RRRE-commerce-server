@@ -7,6 +7,7 @@ import com.jrm.perfimeEcommerce.models.Client;
 import com.jrm.perfimeEcommerce.repository.ClientRepository;
 import com.jrm.perfimeEcommerce.infra.exceptions.UserAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -23,6 +24,8 @@ public class ClientService {
     @Autowired
     private TokenEmailVerificationService tokenEmailVerificationService;
 
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     public Client register(RegistrationClientData data){
         Optional<Client> client = clientRepository.findByEmail(data.email());
         if(client.isPresent()){
@@ -37,5 +40,10 @@ public class ClientService {
 
     public boolean verify(VerifyClientData clientId){
         return tokenEmailVerificationService.validateToken(clientId.email(), clientId.token());
+    }
+
+    public boolean login(LoginClientData loginClientData){
+        Optional<Client> client = clientRepository.findByEmail(loginClientData.email());
+        return Objects.equals(client.get().getPassword(), passwordEncoder.encode(loginClientData.password())) && client.get().getVerified() == 1;
     }
 }

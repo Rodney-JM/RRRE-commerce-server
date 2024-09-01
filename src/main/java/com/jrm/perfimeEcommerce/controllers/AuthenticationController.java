@@ -4,6 +4,7 @@ import com.jrm.perfimeEcommerce.dto.LoginClientData;
 import com.jrm.perfimeEcommerce.dto.TokenJWTData;
 import com.jrm.perfimeEcommerce.models.Client;
 import com.jrm.perfimeEcommerce.services.AuthenticationService;
+import com.jrm.perfimeEcommerce.services.ClientService;
 import com.jrm.perfimeEcommerce.services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +28,13 @@ public class AuthenticationController {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private ClientService clientService;
+
     @PostMapping
     @Transactional
     public ResponseEntity login(@RequestBody LoginClientData loginClientData){
-        boolean client = service.login(loginClientData);
+        boolean client = clientService.login(loginClientData);
 
         if(client){
             var authenticationToken = new UsernamePasswordAuthenticationToken(loginClientData.email(), loginClientData.password());
