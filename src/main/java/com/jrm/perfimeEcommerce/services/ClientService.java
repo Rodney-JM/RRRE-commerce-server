@@ -44,6 +44,6 @@ public class ClientService {
 
     public boolean login(LoginClientData loginClientData){
         Optional<Client> client = clientRepository.findByEmail(loginClientData.email());
-        return Objects.equals(client.get().getPassword(), passwordEncoder.encode(loginClientData.password())) && client.get().getVerified() == 1;
+        return passwordEncoder.matches(loginClientData.password(), client.get().getPassword())  && client.get().getVerified() == 1;
     }
 }
