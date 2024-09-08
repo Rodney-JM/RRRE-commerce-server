@@ -1,6 +1,7 @@
 package com.jrm.perfimeEcommerce.services;
 
 import com.jrm.perfimeEcommerce.dto.LoginClientData;
+import com.jrm.perfimeEcommerce.dto.LoginClientErrorData;
 import com.jrm.perfimeEcommerce.dto.RegistrationClientData;
 import com.jrm.perfimeEcommerce.dto.VerifyClientData;
 import com.jrm.perfimeEcommerce.models.Client;
@@ -42,8 +43,17 @@ public class ClientService {
         return tokenEmailVerificationService.validateToken(clientId.email(), clientId.token());
     }
 
-    public boolean login(LoginClientData loginClientData){
+    public LoginClientErrorData login(LoginClientData loginClientData){
         Optional<Client> client = clientRepository.findByEmail(loginClientData.email());
-        return passwordEncoder.matches(loginClientData.password(), client.get().getPassword())  && client.get().getVerified() == 1;
+        if(client.isPresent()){
+            boolean clientCredentials =  passwordEncoder.matches(loginClientData.password(), client.get().getPassword())  && client.get().getVerified() == 1;
+            if(clientCredentials){
+                return new LoginClientErrorData(true, "");
+            }else{
+                return new LoginClientErrorData(false, "The password is wrong, try again");
+            }
+        }else{
+            return new LoginClientErrorData(false, "The email was not found");
+        }
     }
 }
