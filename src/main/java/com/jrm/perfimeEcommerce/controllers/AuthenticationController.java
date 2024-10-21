@@ -1,7 +1,6 @@
 package com.jrm.perfimeEcommerce.controllers;
 
 import com.jrm.perfimeEcommerce.dto.LoginClientData;
-import com.jrm.perfimeEcommerce.dto.LoginClientErrorData;
 import com.jrm.perfimeEcommerce.dto.TokenJWTData;
 import com.jrm.perfimeEcommerce.models.Client;
 import com.jrm.perfimeEcommerce.services.AuthenticationService;
@@ -35,9 +34,9 @@ public class AuthenticationController {
     @PostMapping
     @Transactional
     public ResponseEntity login(@RequestBody LoginClientData loginClientData){
-        LoginClientErrorData client = clientService.login(loginClientData);
+        boolean client = clientService.login(loginClientData);
 
-        if(client.errorMessage().isEmpty()){
+        if(client){
             var authenticationToken = new UsernamePasswordAuthenticationToken(loginClientData.email(), loginClientData.password());
             var authentication = manager.authenticate(authenticationToken);
 
@@ -45,7 +44,7 @@ public class AuthenticationController {
             return ResponseEntity.ok(new TokenJWTData(tokenJWT));
         }
 
-        return ResponseEntity.badRequest().body(client);
+        return ResponseEntity.badRequest().build();
     }
 }
 

@@ -1,9 +1,10 @@
 package com.jrm.perfimeEcommerce.services;
 
 import com.jrm.perfimeEcommerce.dto.LoginClientData;
-import com.jrm.perfimeEcommerce.dto.LoginClientErrorData;
 import com.jrm.perfimeEcommerce.dto.RegistrationClientData;
 import com.jrm.perfimeEcommerce.dto.VerifyClientData;
+import com.jrm.perfimeEcommerce.infra.exceptions.EmailNotFound;
+import com.jrm.perfimeEcommerce.infra.exceptions.InvalidPassword;
 import com.jrm.perfimeEcommerce.models.Client;
 import com.jrm.perfimeEcommerce.repository.ClientRepository;
 import com.jrm.perfimeEcommerce.infra.exceptions.UserAlreadyExistsException;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -43,17 +43,17 @@ public class ClientService {
         return tokenEmailVerificationService.validateToken(clientId.email(), clientId.token());
     }
 
-    public LoginClientErrorData login(LoginClientData loginClientData){
+    public boolean login(LoginClientData loginClientData){
         Optional<Client> client = clientRepository.findByEmail(loginClientData.email());
         if(client.isPresent()){
             boolean clientCredentials =  passwordEncoder.matches(loginClientData.password(), client.get().getPassword())  && client.get().getVerified() == 1;
             if(clientCredentials){
-                return new LoginClientErrorData(true, "");
+                return true;
             }else{
-                return new LoginClientErrorData(false, "The password is wrong, try again");
+                throw new InvalidPassword("Invalid password");
             }
         }else{
-            return new LoginClientErrorData(false, "The email was not found");
+            throw new EmailNotFound("Email not found");
         }
     }
 }
